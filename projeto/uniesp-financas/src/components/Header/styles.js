@@ -9,7 +9,6 @@ export const Container = styled.SafeAreaView`
   padding: 15px;
   width: 100%;
   height: 60px;
-  
 `;
 
 export const Title = styled.Text`
@@ -22,5 +21,4 @@ export const Title = styled.Text`
 export const ButtonMenu = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
-  pointer-events: auto; /* Adicione esta linha */
 `;

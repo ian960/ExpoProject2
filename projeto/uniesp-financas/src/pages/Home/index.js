@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FlatList, View, Dimensions, TouchableOpacity, Text, RefreshControl, Alert } from 'react-native';
+import { FlatList, View, Dimensions, TouchableOpacity, Text, RefreshControl, Alert, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import styled from 'styled-components/native';
 import Header from '../../components/Header';
@@ -35,8 +35,6 @@ const CarouselCard = styled.View`
   elevation: 3;
   align-items: flex-start;
   justify-content: flex-end;
-
-
   width: ${cardWidth}px;
   height: ${cardHeight}px;
 `;
@@ -149,6 +147,13 @@ export default function Home() {
     setShowDatePicker(false);
   };
 
+  const handleWebDateChange = (event) => {
+    const date = new Date(event.target.value);
+    if (!isNaN(date)) {
+      setSelectedDate(date);
+    }
+  };
+
   const handleDelete = async (movementId, value, type) => {
     try {
       await api.delete('/receives/delete', {
@@ -198,18 +203,19 @@ export default function Home() {
       title: 'Saldo Atual',
       value: balance.saldo || 0,
       bgColor: '#3B3DBF',
+      icon: 'dollar-sign'
     },
     {
       title: 'Entradas de Hoje',
       value: balance.receita || 0,
       bgColor: '#00B94A',
-
+      icon: 'arrow-up'
     },
     {
       title: 'Saídas de Hoje',
       value: balance.despesa || 0,
       bgColor: '#EF463A',
-      
+      icon: 'arrow-down'
     },
   ];
 
@@ -222,7 +228,6 @@ export default function Home() {
       <Background>
         <Header title="Home" />
         <Container>
-          
           <View style={{ height: 150, marginTop: 0 }}>
             <FlatList
               data={carouselData}
@@ -245,6 +250,29 @@ export default function Home() {
             </FilterButton>
           </SectionTitle>
           
+          {Platform.OS === 'web' ? (
+            <input
+              type="date"
+              value={selectedDate.toISOString().split('T')[0]}
+              onChange={handleWebDateChange}
+              style={{
+                padding: 10,
+                borderRadius: 5,
+                marginBottom: 10,
+                width: '100%',
+                fontSize: 16,
+              }}
+            />
+          ) : (
+            <DateTimePickerModal
+              isVisible={showDatePicker}
+              mode="date"
+              date={selectedDate}
+              onConfirm={handleDateConfirm}
+              onCancel={() => setShowDatePicker(false)}
+            />
+          )}
+          
           {movements.length === 0 ? (
             <EmptyText>Nenhuma movimentação registrada nesta data</EmptyText>
           ) : (
@@ -261,14 +289,6 @@ export default function Home() {
               }
             />
           )}
-          
-          <DateTimePickerModal
-            isVisible={showDatePicker}
-            mode="date"
-            date={selectedDate}
-            onConfirm={handleDateConfirm}
-            onCancel={() => setShowDatePicker(false)}
-          />
         </Container>
       </Background>
     </SafeArea>

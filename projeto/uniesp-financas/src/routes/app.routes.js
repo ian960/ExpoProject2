@@ -12,18 +12,16 @@ const AppDrawer = createDrawerNavigator();
 function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: colors.branco }}>
-
       <View style={{ alignItems: 'center', marginTop: 20 }}>
         <Image
           source={Logo}
           style={{
             width: 160,
             height: 160,
-            resizeMode: 'contain',
           }}
+          resizeMode="contain"
         />
       </View>
-
 
       <Text style={{
         textAlign: 'center',
@@ -35,7 +33,6 @@ function CustomDrawerContent(props) {
         Bem-vindo
       </Text>
 
-    
       <DrawerItemList {...props} />
     </DrawerContentScrollView>
   );
@@ -54,7 +51,7 @@ function AppRoutes() {
         drawerInactiveTintColor: colors.preto,
         drawerItemStyle: {
           marginVertical: 8,
-          borderRadius: 0, 
+          borderRadius: 0,
         },
       }}
     >

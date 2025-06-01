@@ -9,7 +9,7 @@ import {
   SubmitButton,
   SubmitText,
   Link,
-  LinkText
+  LinkText,
 } from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../contexts/auth';
@@ -33,28 +33,21 @@ export default function SignIn() {
       return;
     }
 
-    const success = await signIn(email, password);
-    
-    if (success) {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }]
-      });
-    } else {
-      Alert.alert('Erro', 'Credenciais inválidas ou problema no servidor');
+    try {
+      const success = await signIn(email, password);
+      if (!success) {
+        Alert.alert('Erro', 'Credenciais inválidas ou problema no servidor');
+      }
+    } catch (error) {
+      Alert.alert('Erro', error.response?.data?.message || 'Falha na conexão com o servidor');
     }
   }
 
   return (
     <SafeArea>
       <Background>
-        <Container
-          behavior={Platform.OS === 'ios' ? 'padding' : ''}
-          enabled
-        >
-          <Logo
-            source={require('../../assets/Logo.png')}
-          />
+        <Container behavior={Platform.OS === 'ios' ? 'padding' : ''} enabled>
+          <Logo source={require('../../assets/Logo.png')} />
 
           <AreaInput>
             <Input
@@ -76,13 +69,11 @@ export default function SignIn() {
           </AreaInput>
 
           <SubmitButton activeOpacity={0.8} onPress={handleLogin}>
-            {
-              loadingAuth ? (
-                <ActivityIndicator size={20} color="#FFF" />
-              ) : (
-                <SubmitText>Acessar</SubmitText>
-              )
-            }
+            {loadingAuth ? (
+              <ActivityIndicator size={20} color="#FFF" />
+            ) : (
+              <SubmitText>Acessar</SubmitText>
+            )}
           </SubmitButton>
 
           <Link onPress={() => navigation.navigate('SignUp')}>
